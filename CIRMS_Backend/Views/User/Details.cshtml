@@ -1,0 +1,492 @@
+@model CIRMS_Backend.Models.Incident
+
+@{
+    ViewData["Title"] = "Incident Details";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>CIRMS - Incident Details</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f1eb;
+            color: #172033;
+        }
+
+        .top-bar {
+            height: 68px;
+            background: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            border-bottom: 1px solid #ddd8cf;
+
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+        }
+
+        .top-bar h2 {
+            margin: 0;
+            color: #172033;
+            font-size: 23px;
+        }
+
+        .top-bar h2 i {
+            color: #d76b2b;
+            margin-right: 8px;
+        }
+
+        .logout-btn {
+            text-decoration: none;
+            background: #f3e4da;
+            color: #b94e1f !important;
+
+            padding: 10px 17px;
+            border-radius: 7px;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #d76b2b;
+            color: white !important;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 0 25px;
+        }
+
+        .heading {
+            margin-bottom: 20px;
+        }
+
+        .heading h1 {
+            margin: 0;
+            font-size: 28px;
+            color: #172033;
+        }
+
+        .heading p {
+            margin-top: 6px;
+            color: #7a7f85;
+        }
+
+        .incident-card {
+            background: white;
+            border: 1px solid #e1ddd6;
+            border-radius: 11px;
+            overflow: hidden;
+
+            box-shadow: 0 6px 18px rgba(40,35,30,.07);
+        }
+
+        .incident-header {
+            background: #273246;
+            color: white;
+
+            padding: 22px 25px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .incident-header h2 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .incident-header i {
+            color: #e4a23a;
+            margin-right: 8px;
+        }
+
+        .badge {
+            background: #3c9b91;
+            padding: 6px 12px;
+            border-radius: 20px;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .section-title {
+            margin: 0 0 18px;
+
+            font-size: 18px;
+            color: #172033;
+        }
+
+        .section-title i {
+            color: #d76b2b;
+            margin-right: 7px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .info {
+            background: #f8f6f2;
+            border: 1px solid #e5e0d8;
+
+            border-radius: 8px;
+
+            padding: 15px;
+        }
+
+        .label {
+            display: block;
+
+            color: #858b91;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            margin-bottom: 6px;
+        }
+
+        .value {
+            color: #263142;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            word-break: break-word;
+        }
+
+        .status {
+            display: inline-block;
+
+            padding: 5px 11px;
+
+            border-radius: 20px;
+
+            background: #e9f3f1;
+            color: #287b70;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .report-section {
+            margin-top: 25px;
+        }
+
+        .report {
+            background: #faf8f4;
+
+            border-left: 4px solid #3c9b91;
+
+            border-radius: 7px;
+
+            padding: 16px;
+
+            color: #596575;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+        .back {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-top: 25px;
+
+            text-decoration: none;
+
+            background: #273246;
+
+            color: white;
+
+            padding: 10px 16px;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .back:hover {
+            background: #d76b2b;
+        }
+
+        @@media (max-width: 650px) {
+
+            .top-bar {
+                padding: 0 20px;
+            }
+
+            .top-bar h2 {
+                font-size: 18px;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .incident-header {
+                padding: 18px;
+            }
+
+            .content {
+                padding: 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <header class="top-bar">
+
+        <h2>
+            <i class="fa-solid fa-shield-halved"></i>
+            CIRMS - Incident Details
+        </h2>
+
+        <a asp-controller="Account"
+           asp-action="Logout"
+           class="logout-btn">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+
+        </a>
+
+    </header>
+
+
+    <main class="container">
+
+        <div class="heading">
+
+            <h1>
+                My Incident Report
+            </h1>
+
+            <p>
+                View the details and current investigation status of your report.
+            </p>
+
+        </div>
+
+
+        <div class="incident-card">
+
+            <div class="incident-header">
+
+                <h2>
+
+                    <i class="fa-solid fa-file-shield"></i>
+
+                    INC@(Model.IncidentId.ToString("000"))
+
+                </h2>
+
+                <span class="badge">
+                    INCIDENT
+                </span>
+
+            </div>
+
+
+            <div class="content">
+
+                <h2 class="section-title">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    Incident Information
+
+                </h2>
+
+
+                <div class="info-grid">
+
+                    <div class="info">
+
+                        <span class="label">
+                            User ID
+                        </span>
+
+                        <span class="value">
+                            @Model.UserId
+                        </span>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span class="label">
+                            Incident Type
+                        </span>
+
+                        <span class="value">
+                            @Model.IncidentType
+                        </span>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span class="label">
+                            IP Address
+                        </span>
+
+                        <span class="value">
+                            @Model.IpAddress
+                        </span>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span class="label">
+                            Severity
+                        </span>
+
+                        <span class="value">
+                            @Model.Severity
+                        </span>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span class="label">
+                            Status
+                        </span>
+
+                        <span class="value">
+
+                            <span class="status">
+                                @Model.Status
+                            </span>
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span class="label">
+                            Report Date
+                        </span>
+
+                        <span class="value">
+
+                            @Model.ReportDate.ToString("dd-MM-yyyy HH:mm")
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="info">
+
+                        <span class="label">
+                            Evidence
+                        </span>
+
+                        <span class="value">
+
+                            @(Model.FileName ?? "No evidence")
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="report-section">
+
+                    <h2 class="section-title">
+
+                        <i class="fa-solid fa-clipboard-check"></i>
+
+                        SOC Report
+
+                    </h2>
+
+
+                    <div class="report">
+
+                        @(Model.SocReport ?? "SOC has not submitted a report yet.")
+
+                    </div>
+
+                </div>
+
+
+                <a asp-controller="User"
+                   asp-action="Dashboard"
+                   class="back">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Back to Dashboard
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

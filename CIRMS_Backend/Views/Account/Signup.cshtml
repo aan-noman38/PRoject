@@ -1,0 +1,139 @@
+@model CIRMS_Backend.Models.User
+
+@{
+    ViewData["Title"] = "Sign Up";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Create Account - CIRMS</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="~/css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="login-box">
+
+        <h1>Create Account</h1>
+
+        <p>Create your CIRMS account</p>
+
+        <form asp-controller="Account"
+              asp-action="Signup"
+              method="post">
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-user"></i>
+
+                <input type="text"
+                       name="Name"
+                       placeholder="Full Name"
+                       required>
+
+            </div>
+
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-envelope"></i>
+
+                <input type="email"
+                       name="Email"
+                       placeholder="Email"
+                       required>
+
+            </div>
+
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-user"></i>
+
+                <input type="text"
+                       name="Username"
+                       placeholder="Username"
+                       required>
+
+            </div>
+
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input type="password"
+                       name="Password"
+                       id="password"
+                       placeholder="Password"
+                       required>
+
+            </div>
+
+
+            <div class="input-box">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input type="password"
+                       id="confirmPassword"
+                       placeholder="Confirm Password"
+                       required>
+
+            </div>
+
+
+            <p class="error" id="errorMsg">
+                @ViewBag.Error
+            </p>
+
+
+            <button type="submit"
+                    class="login-btn">
+
+                Create Account
+
+            </button>
+
+        </form>
+
+
+        <div id="signupArea">
+
+            <p>
+
+                Already have an account?
+
+                <a asp-controller="Account"
+                   asp-action="Login">
+
+                    Login
+
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

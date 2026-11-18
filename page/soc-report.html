@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SOC Investigation</title>
+
+<link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<header class="top-bar">
+
+<h2>Investigation Report</h2>
+
+<a href="soc-dashboard.html" class="logout-btn">
+Back
+</a>
+
+</header>
+
+<form class="incident-form">
+
+<label>Incident ID</label>
+<input type="text" value="INC001" readonly>
+
+<label>Reported By</label>
+<input type="text" value="Noman" readonly>
+
+<label>Incident Type</label>
+<input type="text" value="Phishing" readonly>
+
+<label>Investigation Notes</label>
+<textarea rows="4"></textarea>
+
+<label>Root Cause</label>
+<textarea rows="3"></textarea>
+
+<label>Action Taken</label>
+<textarea rows="3"></textarea>
+
+<label>Status</label>
+
+<select>
+
+<option>Pending</option>
+<option>In Progress</option>
+<option>Solved</option>
+
+</select>
+
+<label>Upload Evidence</label>
+
+<input type="file">
+
+<br><br>
+
+<button class="login-btn">
+
+Submit Report
+
+</button>
+
+</form>
+
+</div>
+
+</body>
+
+</html>

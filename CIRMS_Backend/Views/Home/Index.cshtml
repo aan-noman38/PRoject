@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "CIRMS Login";
+    Layout = null;
+}
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<link rel="stylesheet" href="~/css/style.css">
+<body>
+
+<div class="container">
+
+    <div class="login-box">
+
+        <h1>CIRMS</h1>
+        <p>Cyber Incident Report Management System</p>
+
+        <div class="role">
+
+            <label>
+                <input type="radio" name="role" value="user" checked>
+                User
+            </label>
+
+            <label>
+                <input type="radio" name="role" value="soc">
+                SOC
+            </label>
+
+            <label>
+                <input type="radio" name="role" value="admin">
+                Admin
+            </label>
+
+        </div>
+
+        <form>
+
+            <div class="input-box">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" placeholder="Username">
+            </div>
+
+            <div class="input-box">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" placeholder="Password">
+
+                <span id="eye">
+                    <i class="fa-solid fa-eye"></i>
+                </span>
+
+            </div>
+
+            <p class="error" id="errorMsg"></p>
+
+            <button type="submit" class="login-btn">
+                Login
+            </button>
+
+        </form>
+
+        <div id="signupArea">
+
+            <p>
+                Don't have an account?
+                <a href="signup.html">Sign Up</a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/script.js"></script>
+
+</body>

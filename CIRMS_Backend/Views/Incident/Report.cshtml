@@ -1,0 +1,899 @@
+```cshtml
+@model CIRMS_Backend.Models.Incident
+
+@{
+    ViewData["Title"] = "New Incident Report";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>CIRMS - New Incident Report</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f1eb;
+            color: #172033;
+        }
+
+        /* =========================
+           HEADER - SAME DASHBOARD
+        ========================= */
+
+        .top-bar {
+            height: 68px;
+            background: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            border-bottom: 1px solid #ddd8cf;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .top-bar h2 {
+            margin: 0;
+            color: #172033;
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .top-bar h2 i {
+            color: #d76b2b;
+            margin-right: 8px;
+        }
+
+        /* =========================
+           BACK BUTTON
+        ========================= */
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            text-decoration: none;
+
+            background: #f3e4da;
+            color: #b94e1f;
+
+            padding: 10px 17px;
+            border-radius: 7px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #d76b2b;
+            color: white;
+        }
+
+        /* =========================
+           MENU - SAME DASHBOARD
+        ========================= */
+
+        .menu {
+            max-width: 1180px;
+            margin: 22px auto 0;
+            padding: 0 25px;
+
+            display: flex;
+            gap: 8px;
+        }
+
+        .menu a {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            text-decoration: none;
+
+            background: #ffffff;
+            color: #4d5868;
+
+            border: 1px solid #ddd8cf;
+
+            padding: 10px 17px;
+            border-radius: 7px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            background: #273246;
+            color: white;
+            border-color: #273246;
+        }
+
+        .menu a.active {
+            background: #273246;
+            color: white;
+            border-color: #273246;
+
+            box-shadow: inset 3px 0 0 #d76b2b;
+        }
+
+        /* =========================
+           PAGE TITLE
+        ========================= */
+
+        .page-title {
+            max-width: 1180px;
+
+            margin: 35px auto 0;
+            padding: 0 25px;
+        }
+
+        .page-title h1 {
+            margin: 0;
+
+            color: #172033;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .page-title p {
+            margin: 7px 0 0;
+
+            color: #7a7f85;
+            font-size: 14px;
+        }
+
+        /* =========================
+           REPORT AREA
+        ========================= */
+
+        .report-container {
+            max-width: 1180px;
+
+            margin: 25px auto 45px;
+            padding: 0 25px;
+
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+
+            gap: 18px;
+        }
+
+        /* =========================
+           FORM CARD
+        ========================= */
+
+        .report-card {
+            background: #ffffff;
+
+            border: 1px solid #e1ddd6;
+            border-radius: 10px;
+
+            padding: 25px;
+
+            box-shadow: 0 5px 14px rgba(40, 35, 30, 0.07);
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 23px;
+            padding-bottom: 16px;
+
+            border-bottom: 1px solid #eeeae4;
+        }
+
+        .report-icon {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #fff0e8;
+            color: #d76b2b;
+
+            font-size: 17px;
+        }
+
+        .report-header h2 {
+            margin: 0;
+
+            color: #172033;
+            font-size: 19px;
+        }
+
+        .report-header p {
+            margin: 4px 0 0;
+
+            color: #8a8f95;
+            font-size: 12px;
+        }
+
+        /* =========================
+           FORM GRID
+        ========================= */
+
+        .form-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .input-group label {
+            margin-bottom: 7px;
+
+            color: #505964;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .required {
+            color: #d76b2b;
+        }
+
+        /* =========================
+           INPUTS
+        ========================= */
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+
+            padding: 11px 12px;
+
+            border: 1px solid #d8d4cc;
+            border-radius: 7px;
+
+            background: #faf9f7;
+
+            color: #172033;
+
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        .input-group textarea {
+            min-height: 125px;
+            resize: vertical;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+
+            border-color: #d76b2b;
+
+            background: #ffffff;
+
+            box-shadow: 0 0 0 3px rgba(215, 107, 43, 0.10);
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: #a2a5a8;
+        }
+
+        /* =========================
+           SUBMIT AREA
+        ========================= */
+
+        .form-actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            margin-top: 23px;
+            padding-top: 18px;
+
+            border-top: 1px solid #eeeae4;
+        }
+
+        .cancel-btn,
+        .submit-btn {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 7px;
+
+            padding: 11px 18px;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .cancel-btn {
+            background: #f0ede7;
+            color: #59616b;
+        }
+
+        .cancel-btn:hover {
+            background: #e4dfd7;
+        }
+
+        .submit-btn {
+            border: none;
+
+            background: #d76b2b;
+            color: white;
+
+            box-shadow: 0 4px 10px rgba(215, 107, 43, 0.20);
+        }
+
+        .submit-btn:hover {
+            background: #bd5720;
+
+            transform: translateY(-2px);
+        }
+
+        /* =========================
+           SIDE INFORMATION CARD
+        ========================= */
+
+        .info-card {
+            background: #ffffff;
+
+            border: 1px solid #e1ddd6;
+            border-top: 4px solid #d76b2b;
+
+            border-radius: 10px;
+
+            padding: 22px;
+
+            box-shadow: 0 5px 14px rgba(40, 35, 30, 0.07);
+
+            height: fit-content;
+        }
+
+        .info-card h3 {
+            margin: 0 0 8px;
+
+            color: #172033;
+            font-size: 17px;
+        }
+
+        .info-card > p {
+            margin: 0 0 18px;
+
+            color: #737a83;
+
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .tip {
+            display: flex;
+
+            gap: 10px;
+
+            padding: 11px;
+
+            margin-bottom: 10px;
+
+            background: #faf8f4;
+
+            border: 1px solid #eeeae4;
+
+            border-radius: 7px;
+
+            color: #59616b;
+
+            font-size: 12px;
+
+            line-height: 1.45;
+        }
+
+        .tip i {
+            color: #d76b2b;
+
+            margin-top: 2px;
+        }
+
+        .severity-box {
+            margin-top: 17px;
+
+            padding-top: 15px;
+
+            border-top: 1px solid #eeeae4;
+        }
+
+        .severity-box strong {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #505964;
+
+            font-size: 12px;
+        }
+
+        .severity-box p {
+            margin: 0;
+
+            color: #8a8f95;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @@media (max-width: 850px) {
+
+            .report-container {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @@media (max-width: 650px) {
+
+            .top-bar {
+                padding: 0 20px;
+            }
+
+            .top-bar h2 {
+                font-size: 18px;
+            }
+
+            .menu {
+                flex-wrap: wrap;
+                padding: 0 15px;
+            }
+
+            .page-title {
+                padding: 0 15px;
+            }
+
+            .report-container {
+                padding: 0 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .input-group.full {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .cancel-btn,
+            .submit-btn {
+                width: 100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header class="top-bar">
+
+        <h2>
+            <i class="fa-solid fa-shield-halved"></i>
+            CIRMS - User Dashboard
+        </h2>
+
+        <a asp-controller="User"
+           asp-action="Dashboard"
+           class="back-btn">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Dashboard
+
+        </a>
+
+    </header>
+
+
+    <!-- =========================
+         NAVIGATION
+    ========================= -->
+
+    <nav class="menu">
+
+        <a asp-controller="User"
+           asp-action="Dashboard">
+
+            <i class="fa-solid fa-chart-line"></i>
+
+            Dashboard
+
+        </a>
+
+
+        <a asp-controller="Incident"
+           asp-action="Report"
+           class="active">
+
+            <i class="fa-solid fa-file-circle-plus"></i>
+
+            New Report
+
+        </a>
+
+
+        <a asp-controller="Account"
+           asp-action="Logout">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </a>
+
+    </nav>
+
+
+    <!-- =========================
+         PAGE TITLE
+    ========================= -->
+
+    <section class="page-title">
+
+        <h1>
+            New Incident Report
+        </h1>
+
+        <p>
+            Submit a detailed report for a cybersecurity incident.
+        </p>
+
+    </section>
+
+
+    <!-- =========================
+         REPORT CONTENT
+    ========================= -->
+
+    <main class="report-container">
+
+
+        <!-- FORM -->
+
+        <section class="report-card">
+
+            <div class="report-header">
+
+                <div class="report-icon">
+
+                    <i class="fa-solid fa-file-shield"></i>
+
+                </div>
+
+                <div>
+
+                    <h2>
+                        Incident Information
+                    </h2>
+
+                    <p>
+                        Provide accurate information about the incident.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form asp-controller="Incident"
+                  asp-action="Report"
+                  method="post">
+
+
+                <div class="form-grid">
+
+
+                    <!-- INCIDENT TYPE -->
+
+                    <div class="input-group">
+
+                        <label>
+                            Incident Type
+                            <span class="required">*</span>
+                        </label>
+
+                        <select name="IncidentType"
+                                required>
+
+                            <option value="">
+                                Select Incident Type
+                            </option>
+
+                            <option value="Malware">
+                                Malware
+                            </option>
+
+                            <option value="Phishing">
+                                Phishing
+                            </option>
+
+                            <option value="DDoS">
+                                DDoS
+                            </option>
+
+                            <option value="Unauthorized Access">
+                                Unauthorized Access
+                            </option>
+
+                            <option value="Data Breach">
+                                Data Breach
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- INCIDENT TITLE -->
+
+                    <div class="input-group">
+
+                        <label>
+                            Incident Title
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               name="FileName"
+                               placeholder="Enter incident title"
+                               required>
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <div class="input-group full">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea name="SocReport"
+                                  placeholder="Describe the incident, what happened, when it happened, and affected systems."></textarea>
+
+                    </div>
+
+
+                    <!-- IP -->
+
+                    <div class="input-group">
+
+                        <label>
+                            IP Address
+                            <span class="required">*</span>
+                        </label>
+
+                        <input type="text"
+                               name="IpAddress"
+                               placeholder="e.g. 192.168.1.10"
+                               required>
+
+                    </div>
+
+
+                    <!-- SEVERITY -->
+
+                    <div class="input-group">
+
+                        <label>
+                            Severity
+                            <span class="required">*</span>
+                        </label>
+
+                        <select name="Severity"
+                                required>
+
+                            <option value="">
+                                Select Severity
+                            </option>
+
+                            <option value="Low">
+                                Low
+                            </option>
+
+                            <option value="Medium">
+                                Medium
+                            </option>
+
+                            <option value="High">
+                                High
+                            </option>
+
+                            <option value="Critical">
+                                Critical
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <a asp-controller="User"
+                       asp-action="Dashboard"
+                       class="cancel-btn">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                        Cancel
+
+                    </a>
+
+
+                    <button type="submit"
+                            class="submit-btn">
+
+                        <i class="fa-solid fa-paper-plane"></i>
+
+                        Submit Report
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+        <!-- INFORMATION -->
+
+        <aside class="info-card">
+
+            <h3>
+                Reporting Guidelines
+            </h3>
+
+            <p>
+                Provide enough information so the security team
+                can quickly understand and investigate the incident.
+            </p>
+
+
+            <div class="tip">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <span>
+                    Use a clear and specific incident type and title.
+                </span>
+
+            </div>
+
+
+            <div class="tip">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <span>
+                    Include the relevant IP address and affected system.
+                </span>
+
+            </div>
+
+
+            <div class="tip">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <span>
+                    Describe what happened with useful details.
+                </span>
+
+            </div>
+
+
+            <div class="tip">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+                <span>
+                    Select the severity according to the impact.
+                </span>
+
+            </div>
+
+
+            <div class="severity-box">
+
+                <strong>
+                    Severity
+                </strong>
+
+                <p>
+                    Use Critical only when the incident has
+                    serious impact and requires urgent response.
+                </p>
+
+            </div>
+
+        </aside>
+
+
+    </main>
+
+</body>
+
+</html>
+```

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+<header class="top-bar">
+    
+<h2>Admin Dashboard</h2>
+
+<a href="../index.html" class="logout-btn">
+<i class="fa-solid fa-right-from-bracket"></i>
+Logout
+</a>
+
+</header>
+<nav class="menu">
+
+<a href="admin-dashboard.html">Dashboard</a>
+
+<a href="assign-soc.html">Assign SOC</a>
+
+<a href="../index.html">Logout</a>
+
+</nav>
+
+
+<div class="card-container">
+
+<div class="card">
+<h3>Total Users</h3>
+<h1>25</h1>
+</div>
+
+<div class="card">
+<h3>Total Reports</h3>
+<h1>40</h1>
+</div>
+
+<div class="card">
+<h3>Pending</h3>
+<h1>8</h1>
+</div>
+
+<div class="card">
+<h3>Solved</h3>
+<h1>32</h1>
+</div>
+
+</div>
+
+<h2>All Incident Reports</h2>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>User</th>
+<th>Type</th>
+<th>Severity</th>
+<th>Status</th>
+<th>Assigned SOC</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>INC001</td>
+<td>Noman</td>
+<td>Phishing</td>
+<td>High</td>
+<td class="pending">Pending</td>
+<td>Not Assigned</td>
+<td>
+<a href="assign-soc.html" class="login-btn">
+Assign
+</a>
+</td>
+</tr>
+
+<tr>
+<td>INC002</td>
+<td>Rahim</td>
+<td>Malware</td>
+<td>Critical</td>
+<td class="solved">Solved</td>
+<td>SOC-01</td>
+<td><button>View</button></td>
+</tr>
+
+</table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,806 @@
+@model List<CIRMS_Backend.Models.Incident>
+
+@{
+    ViewData["Title"] = "SOC Dashboard";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>CIRMS - SOC Dashboard</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f1eb;
+            color: #172033;
+        }
+
+        /* ================= HEADER ================= */
+
+        .top-bar {
+            height: 68px;
+            background: #ffffff;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 45px;
+
+            border-bottom: 1px solid #ddd8cf;
+
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+        }
+
+        .top-bar h2 {
+            margin: 0;
+
+            color: #172033;
+
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .top-bar h2 i {
+            color: #d76b2b;
+            margin-right: 8px;
+        }
+
+        /* ================= LOGOUT ================= */
+
+        .logout-btn {
+            display: inline-flex;
+
+            align-items: center;
+            gap: 7px;
+
+            text-decoration: none;
+
+            background: #f3e4da;
+
+            color: #b94e1f !important;
+
+            padding: 10px 17px;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: .2s;
+        }
+
+        .logout-btn:hover {
+            background: #d76b2b;
+
+            color: white !important;
+        }
+
+        /* ================= MENU ================= */
+
+        .menu {
+            max-width: 1180px;
+
+            margin: 22px auto 0;
+
+            padding: 0 25px;
+
+            display: flex;
+
+            gap: 8px;
+        }
+
+        .menu a {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            text-decoration: none;
+
+            background: #ffffff;
+
+            color: #4d5868;
+
+            border: 1px solid #ddd8cf;
+
+            padding: 10px 17px;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            transition: .2s;
+        }
+
+        .menu a:first-child {
+            background: #273246;
+
+            color: white;
+
+            border-color: #273246;
+
+            box-shadow: inset 3px 0 0 #d76b2b;
+        }
+
+        .menu a:hover {
+            background: #273246;
+
+            color: white;
+
+            border-color: #273246;
+        }
+
+        /* ================= WELCOME ================= */
+
+        .welcome {
+            max-width: 1180px;
+
+            margin: 35px auto 0;
+
+            padding: 0 25px;
+        }
+
+        .welcome h1 {
+            margin: 0;
+
+            color: #172033;
+
+            font-size: 28px;
+
+            font-weight: 700;
+        }
+
+        .welcome p {
+            margin: 7px 0 0;
+
+            color: #7a7f85;
+
+            font-size: 14px;
+        }
+
+        /* ================= CARDS ================= */
+
+        .card-container {
+            max-width: 1180px;
+
+            margin: 25px auto 30px;
+
+            padding: 0 25px;
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .card {
+            position: relative;
+
+            background: #ffffff;
+
+            border: 1px solid #e1ddd6;
+
+            border-radius: 10px;
+
+            padding: 23px;
+
+            min-height: 130px;
+
+            box-shadow: 0 5px 14px rgba(40,35,30,.07);
+
+            overflow: hidden;
+
+            transition: .2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+
+            box-shadow: 0 9px 22px rgba(40,35,30,.12);
+        }
+
+        .card::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 4px;
+            height: 100%;
+
+            background: #3c9b91;
+        }
+
+        .card:nth-child(2)::before {
+            background: #e4a23a;
+        }
+
+        .card:nth-child(3)::before {
+            background: #3c9b91;
+        }
+
+        .card-icon {
+            position: absolute;
+
+            right: 20px;
+            top: 20px;
+
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #f4f1eb;
+
+            color: #596575;
+
+            font-size: 16px;
+        }
+
+        .card h3 {
+            margin: 0 0 12px;
+
+            color: #7a7f85;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: .3px;
+        }
+
+        .card h1 {
+            margin: 0;
+
+            color: #172033;
+
+            font-size: 34px;
+
+            font-weight: 700;
+        }
+
+        /* ================= INCIDENT SECTION ================= */
+
+        .incident-section {
+            max-width: 1180px;
+
+            margin: 0 auto 45px;
+
+            padding: 0 25px;
+        }
+
+        .incident-box {
+            background: #ffffff;
+
+            border: 1px solid #e1ddd6;
+
+            border-radius: 10px;
+
+            padding: 22px;
+
+            box-shadow: 0 5px 14px rgba(40,35,30,.06);
+        }
+
+        .incident-header {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .incident-header h2 {
+            margin: 0;
+
+            color: #172033;
+
+            font-size: 20px;
+
+            font-weight: 700;
+        }
+
+        .incident-header span {
+            color: #8a8f95;
+
+            font-size: 12px;
+        }
+
+        /* ================= TABLE ================= */
+
+        table {
+            width: 100%;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+
+            overflow: hidden;
+        }
+
+        th {
+            background: #f0ede7;
+
+            color: #505964;
+
+            padding: 13px;
+
+            text-align: left;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            border-bottom: 1px solid #ddd8cf;
+        }
+
+        td {
+            padding: 14px 13px;
+
+            color: #4e5865;
+
+            font-size: 13px;
+
+            border-bottom: 1px solid #eeeae4;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #faf8f4;
+        }
+
+        td:first-child {
+            color: #172033;
+
+            font-weight: 700;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            background: #eef2f3;
+
+            color: #53606d;
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+        /* ================= VIEW BUTTON ================= */
+
+        td a {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            color: #c85f28;
+
+            text-decoration: none;
+
+            font-weight: 600;
+
+            padding: 6px 10px;
+
+            border-radius: 5px;
+
+            background: #fff3eb;
+
+            transition: .2s;
+        }
+
+        td a:hover {
+            background: #d76b2b;
+
+            color: white;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty-row {
+            text-align: center;
+
+            color: #8a8f95;
+
+            padding: 35px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @@media (max-width: 850px) {
+
+            .card-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @@media (max-width: 600px) {
+
+            .top-bar {
+                padding: 0 20px;
+            }
+
+            .top-bar h2 {
+                font-size: 18px;
+            }
+
+            .menu {
+                flex-wrap: wrap;
+
+                padding: 0 15px;
+            }
+
+            .welcome {
+                padding: 0 15px;
+            }
+
+            .card-container {
+                grid-template-columns: 1fr;
+
+                padding: 0 15px;
+            }
+
+            .incident-section {
+                padding: 0 15px;
+            }
+
+            .incident-box {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 750px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="top-bar">
+
+        <h2>
+
+            <i class="fa-solid fa-shield-halved"></i>
+
+            CIRMS - SOC Dashboard
+
+        </h2>
+
+
+        <a asp-controller="Account"
+           asp-action="Logout"
+           class="logout-btn">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </a>
+
+    </header>
+
+
+    <!-- ================= MENU ================= -->
+
+    <nav class="menu">
+
+        <a asp-controller="Soc"
+           asp-action="Dashboard">
+
+            <i class="fa-solid fa-chart-line"></i>
+
+            Dashboard
+
+        </a>
+
+
+        <a asp-controller="Account"
+           asp-action="Logout">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </a>
+
+    </nav>
+
+
+    <!-- ================= WELCOME ================= -->
+
+    <section class="welcome">
+
+        <h1>
+            Security Operations Center
+        </h1>
+
+        <p>
+            Monitor and investigate reported cyber incidents.
+        </p>
+
+    </section>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <div class="card-container">
+
+
+        <!-- TOTAL -->
+
+        <div class="card">
+
+            <div class="card-icon">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+            </div>
+
+            <h3>
+                Total Incidents
+            </h3>
+
+            <h1>
+                @ViewBag.Total
+            </h1>
+
+        </div>
+
+
+        <!-- PENDING -->
+
+        <div class="card">
+
+            <div class="card-icon">
+
+                <i class="fa-solid fa-clock"></i>
+
+            </div>
+
+            <h3>
+                Pending
+            </h3>
+
+            <h1>
+                @ViewBag.Pending
+            </h1>
+
+        </div>
+
+
+        <!-- SOLVED -->
+
+        <div class="card">
+
+            <div class="card-icon">
+
+                <i class="fa-solid fa-circle-check"></i>
+
+            </div>
+
+            <h3>
+                Solved
+            </h3>
+
+            <h1>
+                @ViewBag.Solved
+            </h1>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================= INCIDENT REPORTS ================= -->
+
+    <section class="incident-section">
+
+        <div class="incident-box">
+
+
+            <div class="incident-header">
+
+                <h2>
+                    Incident Reports
+                </h2>
+
+                <span>
+                    SOC investigation queue
+                </span>
+
+            </div>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>User ID</th>
+
+                        <th>Incident Type</th>
+
+                        <th>Severity</th>
+
+                        <th>Status</th>
+
+                        <th>Date</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    @if (Model != null && Model.Count > 0)
+                    {
+
+                        foreach (var item in Model)
+                        {
+
+                            <tr>
+
+
+                                <td>
+
+                                    INC@(item.IncidentId.ToString("000"))
+
+                                </td>
+
+
+                                <td>
+
+                                    @item.UserId
+
+                                </td>
+
+
+                                <td>
+
+                                    @item.IncidentType
+
+                                </td>
+
+
+                                <td>
+
+                                    @item.Severity
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="status">
+
+                                        @item.Status
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @item.ReportDate.ToString("dd-MM-yyyy")
+
+                                </td>
+
+
+                                <td>
+
+                                    <a asp-controller="Soc"
+                                       asp-action="Details"
+                                       asp-route-id="@item.IncidentId">
+
+                                        <i class="fa-solid fa-eye"></i>
+
+                                        View
+
+                                    </a>
+
+                                </td>
+
+
+                            </tr>
+
+                        }
+
+                    }
+
+                    else
+                    {
+
+                        <tr>
+
+                            <td colspan="7"
+                                class="empty-row">
+
+                                <i class="fa-regular fa-folder-open"></i>
+
+                                No incidents found.
+
+                            </td>
+
+                        </tr>
+
+                    }
+
+
+                </tbody>
+
+            </table>
+
+
+        </div>
+
+    </section>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1106 @@
+ @model List<CIRMS_Backend.Models.Incident>
+
+@{
+    ViewData["Title"] = "User Dashboard";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>CIRMS - User Dashboard</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fa;
+            color: #273246;
+        }
+
+        /* ================= TOP BAR ================= */
+
+        .top-bar {
+            height: 70px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 45px;
+
+            justify-content: space-between;
+        }
+
+        .top-bar h2 {
+            font-size: 21px;
+            color: #273246;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        /* ================= NOTIFICATION ================= */
+
+        .notification-wrapper {
+            position: relative;
+        }
+
+        .notification-icon {
+            position: relative;
+
+            color: #273246;
+
+            font-size: 21px;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            transition: 0.2s;
+        }
+
+        .notification-icon:hover {
+            background: #f1f5f9;
+        }
+
+        .notification-count {
+            position: absolute;
+
+            top: -3px;
+            right: -3px;
+
+            min-width: 18px;
+            height: 18px;
+
+            padding: 0 4px;
+
+            background: #e45757;
+
+            color: white;
+
+            border-radius: 50%;
+
+            font-size: 10px;
+            font-weight: bold;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-dropdown {
+            display: none;
+
+            position: absolute;
+
+            right: 0;
+            top: 47px;
+
+            width: 350px;
+
+            background: white;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 12px;
+
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+
+            z-index: 9999;
+
+            overflow: hidden;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 16px 18px;
+
+            border-bottom: 1px solid #edf0f3;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-header h3 {
+            font-size: 16px;
+            color: #273246;
+        }
+
+        .notification-header span {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+       .notification-item {
+    display: flex;
+    gap: 12px;
+
+    padding: 15px 17px;
+
+    border-bottom: 1px solid #f0f2f5;
+
+    transition: 0.2s;
+
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background: #f1f5f9;
+}
+
+        .notification-item.unread {
+            background: #f3f7fc;
+        }
+
+        .notification-icon-small {
+            width: 34px;
+            height: 34px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #edf5ff;
+
+            color: #2f80ed;
+        }
+
+        .notification-icon-small.solved {
+            background: #ecfdf3;
+            color: #16a34a;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content p {
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            color: #334155;
+
+            margin-bottom: 5px;
+        }
+
+        .notification-content small {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+
+        .no-notification {
+            padding: 30px 15px;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+        /* ================= LOGOUT ================= */
+
+        .logout-btn {
+            text-decoration: none;
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+        }
+
+        .logout-btn:hover {
+            color: #e45757;
+        }
+
+        /* ================= NAVIGATION ================= */
+
+        .menu {
+            background: white;
+
+            padding: 0 45px;
+
+            height: 52px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 30px;
+
+            border-bottom: 1px solid #edf0f3;
+        }
+
+        .menu a {
+            text-decoration: none;
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            color: #2f80ed;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main-container {
+            max-width: 1200px;
+
+            margin: 35px auto;
+
+            padding: 0 25px;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 27px;
+
+            color: #273246;
+
+            margin-bottom: 7px;
+        }
+
+        .welcome p {
+            color: #94a3b8;
+
+            font-size: 14px;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .card-container {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 18px;
+
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+
+            border: 1px solid #e8edf2;
+
+            border-radius: 12px;
+
+            padding: 23px;
+
+            min-height: 125px;
+
+            box-shadow: 0 3px 12px rgba(0,0,0,.035);
+
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 20px rgba(0,0,0,.07);
+        }
+
+        .card h3 {
+            color: #64748b;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            margin-bottom: 12px;
+        }
+
+        .card h1 {
+            font-size: 30px;
+
+            color: #273246;
+        }
+
+        /* ================= REPORT BUTTON ================= */
+
+        .report-btn {
+            margin-bottom: 28px;
+        }
+
+        .report-btn a {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            background: #2f80ed;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 12px 18px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+        .report-btn a:hover {
+            background: #256fd1;
+
+            transform: translateY(-1px);
+        }
+
+        /* ================= TABLE ================= */
+
+        .report-section {
+            background: white;
+
+            border: 1px solid #e8edf2;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow: 0 3px 12px rgba(0,0,0,.035);
+        }
+
+        .report-section-header {
+            padding: 20px 22px;
+
+            border-bottom: 1px solid #edf0f3;
+        }
+
+        .report-section-header h2 {
+            font-size: 18px;
+
+            color: #273246;
+        }
+
+        .table-wrapper {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8fafc;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            padding: 14px 16px;
+
+            text-align: left;
+
+            border-bottom: 1px solid #e8edf2;
+        }
+
+        td {
+            padding: 15px 16px;
+
+            font-size: 13px;
+
+            color: #475569;
+
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: #fafcff;
+        }
+
+        .incident-id {
+            font-weight: 700;
+
+            color: #2f80ed;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            display: inline-block;
+
+            padding: 5px 10px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+        }
+
+        .status.pending {
+            background: #fff7ed;
+
+            color: #c2410c;
+        }
+
+        .status.progress {
+            background: #eff6ff;
+
+            color: #2563eb;
+        }
+
+        .status.solved {
+            background: #ecfdf3;
+
+            color: #15803d;
+        }
+
+        /* ================= SEVERITY ================= */
+
+        .severity {
+            font-weight: 600;
+        }
+
+        .severity.critical {
+            color: #dc2626;
+        }
+
+        .severity.high {
+            color: #ea580c;
+        }
+
+        .severity.medium {
+            color: #ca8a04;
+        }
+
+        .severity.low {
+            color: #16a34a;
+        }
+
+        /* ================= VIEW BUTTON ================= */
+
+        .view-btn {
+            text-decoration: none;
+
+            color: #2f80ed;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            padding: 6px 11px;
+
+            border: 1px solid #cfe1fb;
+
+            border-radius: 6px;
+
+            transition: 0.2s;
+        }
+
+        .view-btn:hover {
+            background: #eff6ff;
+        }
+
+        .empty-row {
+            text-align: center;
+
+            padding: 35px !important;
+
+            color: #94a3b8;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @@media (max-width: 900px) {
+
+            .card-container {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .top-bar {
+                padding: 0 20px;
+            }
+
+            .menu {
+                padding: 0 20px;
+            }
+
+        }
+
+        @@media (max-width: 600px) {
+
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+
+            .main-container {
+                margin-top: 25px;
+            }
+
+            .notification-dropdown {
+                position: fixed;
+
+                top: 70px;
+
+                right: 15px;
+
+                width: calc(100% - 30px);
+            }
+
+            .top-bar h2 {
+                font-size: 17px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= TOP BAR ================= -->
+
+<header class="top-bar">
+
+    <h2>
+        CIRMS - User Dashboard
+    </h2>
+
+
+    <div class="top-right">
+
+
+        <!-- Notification -->
+
+        <div class="notification-wrapper">
+
+            <a href="javascript:void(0)"
+               class="notification-icon"
+               id="notificationButton">
+
+                <i class="fa-solid fa-bell"></i>
+
+
+                @if (ViewBag.UnreadNotifications != null &&
+                     ViewBag.UnreadNotifications > 0)
+                {
+                    <span class="notification-count">
+
+                        @ViewBag.UnreadNotifications
+
+                    </span>
+                }
+
+            </a>
+
+
+            <!-- Notification Dropdown -->
+
+            <div class="notification-dropdown"
+                 id="notificationDropdown">
+
+
+                <div class="notification-header">
+
+                    <h3>
+                        Notifications
+                    </h3>
+
+                    <span>
+                        Recent
+                    </span>
+
+                </div>
+
+
+                @if (ViewBag.Notifications != null &&
+                     ViewBag.Notifications.Count > 0)
+                {
+
+                    foreach (var notification
+                             in ViewBag.Notifications)
+                    {
+
+                        bool isSolved =
+                            notification.Message
+                            .ToString()
+                            .Contains("solved",
+                                     StringComparison.OrdinalIgnoreCase);
+
+
+                     <a asp-controller="User"
+   asp-action="MarkNotificationRead"
+   asp-route-id="@notification.NotificationId"
+   class="notification-item @(notification.IsRead ? "" : "unread")">
+
+    <div class="notification-icon-small
+         @(isSolved ? "solved" : "")">
+
+        @if (isSolved)
+        {
+            <i class="fa-solid fa-circle-check"></i>
+        }
+        else
+        {
+            <i class="fa-solid fa-circle-info"></i>
+        }
+
+    </div>
+
+    <div class="notification-content">
+
+        <p>
+            @notification.Message
+        </p>
+
+        <small>
+            @notification.CreatedAt.ToString("dd-MM-yyyy HH:mm")
+        </small>
+
+    </div>
+
+</a>
+
+                    }
+
+                }
+                else
+                {
+
+                    <div class="no-notification">
+
+                        <i class="fa-regular fa-bell-slash"></i>
+
+                        <br /><br />
+
+                        No notifications yet.
+
+                    </div>
+
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- Logout -->
+
+        <a asp-controller="Account"
+           asp-action="Logout"
+           class="logout-btn">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+            Logout
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- ================= NAVIGATION ================= -->
+
+<nav class="menu">
+
+    <a asp-controller="User"
+       asp-action="Dashboard">
+
+        Dashboard
+
+    </a>
+
+
+    <a asp-controller="Incident"
+       asp-action="Report">
+
+        New Report
+
+    </a>
+
+
+    <a asp-controller="Account"
+       asp-action="Logout">
+
+        Logout
+
+    </a>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="main-container">
+
+
+    <!-- Welcome -->
+
+    <div class="welcome">
+
+        <h1>
+            Welcome to CIRMS
+        </h1>
+
+        <p>
+            Monitor your cyber incident reports and investigation updates.
+        </p>
+
+    </div>
+
+
+    <!-- ================= STATISTICS ================= -->
+
+    <div class="card-container">
+
+
+        <div class="card">
+
+            <h3>
+                Total Reports
+            </h3>
+
+            <h1>
+                @ViewBag.Total
+            </h1>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Pending
+            </h3>
+
+            <h1>
+                @ViewBag.Pending
+            </h1>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Solved
+            </h3>
+
+            <h1>
+                @ViewBag.Solved
+            </h1>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>
+                Critical
+            </h3>
+
+            <h1>
+                @ViewBag.Critical
+            </h1>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= NEW REPORT ================= -->
+
+    <div class="report-btn">
+
+        <a asp-controller="Incident"
+           asp-action="Report">
+
+            <i class="fa-solid fa-plus"></i>
+
+            New Incident Report
+
+        </a>
+
+    </div>
+
+
+    <!-- ================= INCIDENT REPORTS ================= -->
+
+    <div class="report-section">
+
+
+        <div class="report-section-header">
+
+            <h2>
+                My Incident Reports
+            </h2>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Incident Type
+                        </th>
+
+                        <th>
+                            Severity
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                    @if (Model != null &&
+                         Model.Count > 0)
+                    {
+
+                        foreach (var item in Model)
+                        {
+
+                            <tr>
+
+
+                                <td>
+
+                                    <span class="incident-id">
+
+                                        INC@(item.IncidentId.ToString("000"))
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @item.IncidentType
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="severity
+                                        @(item.Severity?.ToLower() == "critical"
+                                            ? "critical"
+                                            : item.Severity?.ToLower() == "high"
+                                                ? "high"
+                                                : item.Severity?.ToLower() == "medium"
+                                                    ? "medium"
+                                                    : "low")">
+
+                                        @item.Severity
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="status
+                                        @(item.Status == "Solved"
+                                            ? "solved"
+                                            : item.Status == "In Progress"
+                                                ? "progress"
+                                                : "pending")">
+
+                                        @item.Status
+
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @item.ReportDate
+                                        .ToString("dd-MM-yyyy")
+
+                                </td>
+
+
+                                <td>
+
+                                    <a asp-controller="User"
+                                       asp-action="Details"
+                                       asp-route-id="@item.IncidentId"
+                                       class="view-btn">
+
+                                        <i class="fa-solid fa-eye"></i>
+
+                                        View
+
+                                    </a>
+
+                                </td>
+
+
+                            </tr>
+
+                        }
+
+                    }
+                    else
+                    {
+
+                        <tr>
+
+                            <td colspan="6"
+                                class="empty-row">
+
+                                <i class="fa-regular fa-folder-open"></i>
+
+                                <br /><br />
+
+                                No incident reports found.
+
+                            </td>
+
+                        </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+    const notificationButton =
+        document.getElementById("notificationButton");
+
+    const notificationDropdown =
+        document.getElementById("notificationDropdown");
+
+
+    notificationButton.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        notificationDropdown.classList.toggle("show");
+
+    });
+
+
+    document.addEventListener("click", function (event) {
+
+        if (!event.target.closest(".notification-wrapper")) {
+
+            notificationDropdown.classList.remove("show");
+
+        }
+
+    });
+
+</script>
+
+
+</body>
+
+</html>

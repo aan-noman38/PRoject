@@ -1,0 +1,712 @@
+ @{
+    ViewData["Title"] = "CIRMS Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>CIRMS - Login</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef1f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #182230;
+        }
+
+        .login-wrapper {
+            width: 1050px;
+            max-width: 94%;
+            min-height: 650px;
+            background: #ffffff;
+            border-radius: 22px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 20px 60px rgba(20, 35, 50, 0.15);
+        }
+
+        /* ================= LEFT ================= */
+
+        .animation-side {
+            width: 48%;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 45px;
+            position: relative;
+        }
+
+        .brand {
+            position: absolute;
+            top: 30px;
+            left: 35px;
+            font-size: 27px;
+            font-weight: 800;
+            color: #102a43;
+            letter-spacing: 1px;
+        }
+
+        .brand span {
+            color: #2f80ed;
+        }
+
+        .character-area {
+            width: 330px;
+            height: 330px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Ghost characters */
+
+        .ghost {
+            position: absolute;
+            width: 135px;
+            height: 155px;
+            background: white;
+            border: 5px solid #263238;
+            border-radius: 65px 65px 45px 45px;
+            bottom: 25px;
+        }
+
+        .ghost::after {
+            content: "";
+            position: absolute;
+            bottom: -12px;
+            left: 10px;
+            width: 25px;
+            height: 25px;
+            background: white;
+            border-left: 5px solid #263238;
+            border-bottom: 5px solid #263238;
+            transform: rotate(-25deg);
+        }
+
+        .ghost.left {
+            left: 5px;
+            transform: scale(.82);
+        }
+
+        .ghost.right {
+            right: 5px;
+            width: 165px;
+            height: 190px;
+        }
+
+        .eye {
+            position: absolute;
+            width: 13px;
+            height: 19px;
+            background: #263238;
+            border-radius: 50%;
+            top: 55px;
+        }
+
+        .eye.one {
+            left: 38px;
+        }
+
+        .eye.two {
+            right: 38px;
+        }
+
+        .mouth {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 20px;
+            top: 88px;
+            border-radius: 50%;
+            background: #ef5350;
+        }
+
+        .happy .mouth {
+            width: 38px;
+            height: 25px;
+            border-radius: 5px 5px 20px 20px;
+            background: #ff5a4f;
+        }
+
+        .happy .eye {
+            height: 8px;
+            border-radius: 50% 50% 0 0;
+            background: transparent;
+            border-top: 4px solid #263238;
+        }
+
+        .sad .mouth {
+            width: 30px;
+            height: 17px;
+            border-radius: 50% 50% 0 0;
+            background: #ef5350;
+            border-top: 0;
+        }
+
+        .sparkle {
+            position: absolute;
+            font-size: 25px;
+            color: #172b4d;
+        }
+
+        .sparkle.s1 {
+            top: 55px;
+            right: 20px;
+        }
+
+        .sparkle.s2 {
+            top: 110px;
+            left: 20px;
+            font-size: 18px;
+        }
+
+        .message-bubble {
+            background: white;
+            border: 3px solid #263238;
+            border-radius: 18px;
+            padding: 13px 22px;
+            font-weight: bold;
+            font-size: 17px;
+            position: absolute;
+            top: 25px;
+            left: 0;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: .3s ease;
+        }
+
+        .message-bubble.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message-bubble::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            right: 30px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-right: 3px solid #263238;
+            border-bottom: 3px solid #263238;
+            transform: rotate(45deg);
+        }
+
+        .animation-title {
+            font-size: 16px;
+            color: #718096;
+            margin-top: 15px;
+        }
+
+        /* ================= RIGHT ================= */
+
+        .form-side {
+            width: 52%;
+            padding: 65px 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-side h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #182230;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 32px;
+            font-size: 15px;
+        }
+
+        .role-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+
+        .roles {
+            display: flex;
+            gap: 22px;
+            margin-bottom: 24px;
+        }
+
+        .role {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #334155;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .role input {
+            accent-color: #2f80ed;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            height: 52px;
+            border: 1px solid #d9e1ea;
+            border-radius: 10px;
+            outline: none;
+            padding: 0 45px;
+            font-size: 15px;
+            transition: .2s;
+            background: #fbfcfe;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #2f80ed;
+            box-shadow: 0 0 0 3px rgba(47,128,237,.10);
+            background: white;
+        }
+
+        .password-eye {
+            position: absolute;
+            right: 16px;
+            left: auto !important;
+            cursor: pointer;
+        }
+
+        .login-btn {
+            width: 100%;
+            height: 53px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2f80ed, #6c5ce7);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 5px;
+            transition: .25s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(47,128,237,.25);
+        }
+
+        .error-message {
+            margin-top: 18px;
+            padding: 13px 15px;
+            border-left: 4px solid #ef476f;
+            background: #fff1f3;
+            color: #c53030;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+        .signup {
+            text-align: center;
+            margin-top: 25px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .signup a {
+            color: #2f80ed;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .signup a:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= ANIMATION ================= */
+
+        .happy-animation {
+            animation: happyBounce .7s ease;
+        }
+
+        .sad-animation {
+            animation: sadShake .55s ease;
+        }
+
+        @@keyframes happyBounce {
+            0% { transform: translateY(0) scale(1); }
+            40% { transform: translateY(-22px) scale(1.06); }
+            70% { transform: translateY(5px) scale(.98); }
+            100% { transform: translateY(0) scale(1); }
+        }
+
+        @@keyframes sadShake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-7px); }
+            80% { transform: translateX(7px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @@media (max-width: 800px) {
+
+            .login-wrapper {
+                flex-direction: column;
+                margin: 20px;
+            }
+
+            .animation-side,
+            .form-side {
+                width: 100%;
+            }
+
+            .animation-side {
+                min-height: 330px;
+            }
+
+            .character-area {
+                transform: scale(.75);
+                margin-top: 20px;
+            }
+
+            .form-side {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-wrapper">
+
+    <!-- LEFT SIDE -->
+
+    <div class="animation-side">
+
+        <div class="brand">
+            CIRMS<span>.</span>
+        </div>
+
+        <div class="character-area" id="characterArea">
+
+            <div class="message-bubble" id="messageBubble">
+                Welcome back!
+            </div>
+
+            <div class="ghost left" id="ghostLeft">
+                <div class="eye one"></div>
+                <div class="eye two"></div>
+                <div class="mouth"></div>
+            </div>
+
+            <div class="ghost right" id="ghostRight">
+                <div class="eye one"></div>
+                <div class="eye two"></div>
+                <div class="mouth"></div>
+            </div>
+
+            <div class="sparkle s1">✦</div>
+            <div class="sparkle s2">✦</div>
+
+        </div>
+
+        <p class="animation-title" id="animationText">
+            Secure access to CIRMS
+        </p>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+
+    <div class="form-side">
+
+        <h1>Sign In</h1>
+
+        <p class="subtitle">
+            Cyber Incident Report Management System
+        </p>
+
+
+        <form asp-controller="Account"
+              asp-action="Login"
+              method="post"
+              id="loginForm">
+
+            <div class="role-title">
+                Login as
+            </div>
+
+            <div class="roles">
+
+                <label class="role">
+                    <input type="radio"
+                           name="Role"
+                           value="User"
+                           checked>
+                    <span>User</span>
+                </label>
+
+                <label class="role">
+                    <input type="radio"
+                           name="Role"
+                           value="SOC">
+                    <span>SOC</span>
+                </label>
+
+                <label class="role">
+                    <input type="radio"
+                           name="Role"
+                           value="Admin">
+                    <span>Admin</span>
+                </label>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="Username">
+                    Username
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <input type="text"
+                           id="Username"
+                           name="Username"
+                           placeholder="Enter your username"
+                           required />
+
+                </div>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="Password">
+                    Password
+                </label>
+
+                <div class="input-wrapper">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input type="password"
+                           id="Password"
+                           name="Password"
+                           placeholder="Enter your password"
+                           required />
+
+                    <i class="fa-solid fa-eye password-eye"
+                       id="togglePassword"></i>
+
+                </div>
+
+            </div>
+
+
+            <button type="submit"
+                    class="login-btn">
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Sign In
+
+            </button>
+
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="error-message">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    @ViewBag.Error
+                </div>
+            }
+
+
+        </form>
+
+
+        <div class="signup">
+
+            Don't have an account?
+
+            <a asp-controller="Account"
+               asp-action="Signup">
+
+                Sign Up
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const password = document.getElementById("Password");
+    const togglePassword = document.getElementById("togglePassword");
+
+    togglePassword.addEventListener("click", function () {
+
+        if (password.type === "password") {
+
+            password.type = "text";
+
+            this.classList.remove("fa-eye");
+            this.classList.add("fa-eye-slash");
+
+        } else {
+
+            password.type = "password";
+
+            this.classList.remove("fa-eye-slash");
+            this.classList.add("fa-eye");
+
+        }
+
+    });
+
+
+    const characterArea =
+        document.getElementById("characterArea");
+
+    const messageBubble =
+        document.getElementById("messageBubble");
+
+    const animationText =
+        document.getElementById("animationText");
+
+
+    /*
+       Password field focus:
+       Character becomes alert.
+    */
+
+    password.addEventListener("focus", function () {
+
+        messageBubble.innerText = "Enter your password...";
+        messageBubble.classList.add("show");
+
+    });
+
+
+    /*
+       When user types password,
+       character reacts.
+    */
+
+    password.addEventListener("input", function () {
+
+        if (this.value.length > 0) {
+
+            messageBubble.innerText = "Almost there...";
+            messageBubble.classList.add("show");
+
+        } else {
+
+            messageBubble.classList.remove("show");
+
+        }
+
+    });
+
+
+    /*
+       Login submit animation.
+
+       IMPORTANT:
+       Form still submits normally to
+       AccountController/Login.
+    */
+
+    document.getElementById("loginForm")
+        .addEventListener("submit", function () {
+
+            const button =
+                document.querySelector(".login-btn");
+
+            button.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+
+            button.style.opacity = "0.8";
+
+        });
+
+
+    /*
+       If server returns an error,
+       show sad animation.
+    */
+
+    const errorBox =
+        document.querySelector(".error-message");
+
+    if (errorBox) {
+
+        characterArea.classList.add("sad-animation");
+
+        messageBubble.innerText =
+            "Wrong credentials!";
+
+        messageBubble.classList.add("show");
+
+        animationText.innerText =
+            "Oops! Please try again.";
+
+    }
+
+</script>
+
+</body>
+</html>
